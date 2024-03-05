@@ -1,0 +1,8 @@
+.idea
+*.iml
+out
+gen
+
+# Another files
+.DS_Store
+.Rproj.user
