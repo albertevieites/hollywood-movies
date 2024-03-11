@@ -31,6 +31,7 @@ library(svglite)
 library(shiny)
 library(viridis)
 library(wesanderson)
+library(pandoc)
 
 # Load data
 df <- read.csv("./data/clean_df.csv")
