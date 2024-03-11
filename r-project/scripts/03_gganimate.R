@@ -10,13 +10,11 @@ View(df)
 table(df$Profitability)
 
 df_filtered <- df %>%
-  filter(Profitability <= 60) %>% # Ajusta el 60 si necesitas un límite diferente
+  filter(Profitability <= 60) %>% 
   drop_na(Audience..score.., Profitability, Worldwide.Gross, Genre)
 
-# Asegúrate de que Year es numérico para la animación
 df_filtered$Year <- as.numeric(as.character(df_filtered$Year))
 
-# Crear el scatter plot animado con el dataframe filtrado
 p <- ggplot(df_filtered, aes(x = Audience..score.., y = Profitability, size = Worldwide.Gross, color = Genre)) +
   geom_point(alpha = 0.7) +
   scale_colour_brewer(palette = "Paired") +
@@ -39,6 +37,5 @@ p <- ggplot(df_filtered, aes(x = Audience..score.., y = Profitability, size = Wo
     axis.text.y = element_text(hjust = 1, vjust = 1, size = 12)
   )
 
-# Crear la animación
 animate(p, width = 800, height = 600, duration = 20, fps = 5, renderer = gifski_renderer())
 
