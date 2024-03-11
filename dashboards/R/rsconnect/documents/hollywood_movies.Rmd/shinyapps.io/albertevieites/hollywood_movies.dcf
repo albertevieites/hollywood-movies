@@ -1,0 +1,12 @@
+name: hollywood_movies
+title: hollywood_movies
+username: albertevieites
+account: albertevieites
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 11456705
+bundleId: 8358125
+url: https://albertevieites.shinyapps.io/hollywood_movies/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
