@@ -1,0 +1,426 @@
+---
+title: "Hollywood Movies"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+# Importing Libraries
+library(ggplot2)
+library(corrplot)
+library(dplyr)
+library(tidyverse)
+library(purrr)
+library(foreign)
+library(apaTables)
+library(PerformanceAnalytics)
+library(psych)
+library(corrr)
+library(caret)
+library(gridExtra)
+library(patchwork)
+library(RColorBrewer)
+library(stringr)
+library(showtext)
+library(gganimate)
+library(gifski)
+library(svglite)
+library(shiny)
+library(viridis)
+
+# Load data
+df <- read.csv("./data/clean_df.csv")
+
+# Cleaned data
+df_cleaned <- subset(df, select = -1)
+
+# Summary data by year
+df_studio_year_summary <- df_cleaned %>%
+  group_by(Lead.Studio, Year) %>%
+  summarise(Count = n(), .groups = 'drop')
+
+# Summary data by genre
+df_genre_year_summary <- df_cleaned %>%
+  group_by(Genre, Year) %>%
+  summarise(Count = n(), .groups = 'drop')
+
+# Clean variable names
+names(df) <- gsub("_", " ", names(df))
+names(df) <- sapply(names(df), function(x) {
+  str_trim(gsub(" +", " ", x))
+})
+
+# Capitalize first letter
+names(df) <- sapply(strsplit(names(df), " "), function(x) 
+    paste(toupper(substring(x, 1,1)), substring(x, 2), sep="", collapse=" "))
+
+names(df_cleaned)
+
+# Numeric dataframe
+df_numeric <- df_cleaned %>%
+  select_if(is.numeric)
+
+```
+
+Industry Trends {data-orientation=columns}
+=====================================  
+
+Column {data-width=600}
+-----------------------------------------------------------------------
+
+### Movies by Studio
+
+```{r}
+selectInput("selectedYear", "Select Year:",
+            choices = sort(unique(df_studio_year_summary$Year)),
+            selected = max(df_studio_year_summary$Year))
+
+renderPlot({
+  filtered_data <- df_studio_year_summary %>%
+    filter(Year == input$selectedYear)
+  
+  ggplot(filtered_data, aes(x = reorder(Lead.Studio, -Count), y = Count, fill = Lead.Studio)) +
+    geom_col(show.legend = FALSE) +
+    scale_fill_viridis_d(option = "mako") +
+    theme_minimal() +
+    theme(
+      plot.margin = margin(b = 100),
+      panel.background = element_blank(),
+      panel.grid.major.y = element_line(color = "grey85", linetype = "dotted"),
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor.x = element_blank(),
+      panel.grid.minor.y = element_blank(),
+      plot.title = element_text(family = "merriweather", face = "bold", size = 20),
+      axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 12),
+      axis.text.y = element_text(hjust = 1, vjust = 1, size = 12),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    ) 
+})
+
+
+
+```
+
+Column {data-width=600}
+-----------------------------------------------------------------------
+
+### Movies by Genre
+
+```{r}
+selectInput("selectedGenreYear", "Select Year:", 
+            choices = sort(unique(df_genre_year_summary$Year)), 
+            selected = max(df_genre_year_summary$Year))
+
+renderPlot({
+  filtered_data <- df_genre_year_summary %>%
+    filter(Year == input$selectedGenreYear)
+  
+  ggplot(filtered_data, aes(x = reorder(Genre, -Count), y = Count, fill = Genre)) +
+    geom_col(show.legend = FALSE) +
+    scale_fill_viridis_d(option = "mako") +
+    theme_minimal() +
+    theme(
+      plot.margin = margin(b = 100),
+      panel.background = element_blank(),
+      panel.grid.major.y = element_line(color = "grey85", linetype = "dotted"),
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor.x = element_blank(),
+      panel.grid.minor.y = element_blank(),
+      plot.title = element_text(family = "merriweather", face = "bold", size = 20),
+      axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 12),
+      axis.text.y = element_text(hjust = 1, vjust = 1, size = 12),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    ) 
+})
+```
+
+
+
+Distribution Insights {data-orientation=columns}
+=====================================     
+   
+Column {data-width=600}
+-------------------------------------
+
+### Numeric Variables
+
+```{r}
+# Create histograms for numeric variables
+df_long <- pivot_longer(df_numeric, cols = everything(), names_to = "variable", values_to = "value")
+
+df_long$variable <- recode(df_long$variable,
+                           'Audience..score..' = 'Audience Score',
+                           'Rotten.Tomatoes..' = 'Rotten Tomatoes Score',
+                           'Worldwide.Gross' =  'Worldwide Gross',
+                           .default = df_long$variable) 
+
+p_numerical <- ggplot(df_long, aes(x = value)) +
+  geom_histogram(bins = 12, fill = "#2E3F8B", color = "grey") +
+  facet_wrap(~ variable, scales = "free", ncol = 2, strip.position = "bottom") +
+  theme_minimal() +
+  labs(x = NULL, y = NULL) +
+  theme(plot.title = element_text(hjust = 0.5),
+        strip.background = element_blank(),
+        strip.text.x = element_text(size = 10, color = "black", face = "bold"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(color = "grey", size = 0.2), 
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.background = element_blank(),
+        strip.placement = "outside")
+
+p_numerical
+```
+
+Row {data-width=600}
+-------------------------------------
+   
+### Categorical Variables
+
+```{r}
+df_categorical <- df_cleaned %>%
+  rename(`Lead Studio` = Lead.Studio) %>%
+  select(Genre, `Lead Studio`)
+
+df_long_categorical <- df_categorical %>%
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "value")
+
+df_long_categorical <- df_long_categorical %>%
+  filter(value != "", !is.na(value))
+
+df_long_categorical <- df_long_categorical %>%
+  mutate(value = factor(value)) %>%
+  mutate(value = fct_infreq(value))
+
+# Filtro para el primer gráfico (Genre)
+df_genre <- df_long_categorical %>%
+  filter(variable == "Genre")
+
+# Gráfico para Genre
+p_genre <- ggplot(df_genre, aes(x = value)) +
+  geom_bar(fill = "#2E3F8B", color = "grey") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    strip.background = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(color = "grey", size = 0.2), 
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.background = element_blank(),
+    axis.title.y = element_blank(), 
+    axis.title.x = element_blank(), 
+    axis.text.x = element_text(face = "bold", angle = 45, hjust = 1),
+    strip.placement = "outside"
+  )
+  labs(x = NULL, y = NULL, title = "Genre")
+
+# Filtro para el segundo gráfico (Lead Studio)
+df_lead_studio <- df_long_categorical %>%
+  filter(variable == "Lead Studio")
+
+# Gráfico para Lead Studio
+p_lead_studio <- ggplot(df_lead_studio, aes(x = value)) +
+  geom_bar(fill = "#2E3F8B", color = "grey") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    strip.background = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(color = "grey", size = 0.2), 
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.background = element_blank(),
+    axis.title.y = element_blank(), 
+    axis.title.x = element_blank(), 
+    axis.text.x = element_text(face = "bold", angle = 45, hjust = 1),
+    strip.placement = "outside"
+  )
+  labs(x = NULL, y = NULL, title = "Lead Studio")
+
+# Combinar los dos gráficos
+p_combined <- p_genre / p_lead_studio 
+p_combined
+
+```   
+  
+
+
+Data Relationships {data-orientation=columns}
+=====================================     
+   
+Column {data-height=800}
+-------------------------------------
+
+### untitled
+
+```{r}
+# Combining plots
+## AUDIENCE SCORE | ROTTEN TOMATOES SCORE
+## Create my own colour palette
+my_colors <- c("#000000", "#306155", "#2E3F8B", "#E0A800", "#5C3061", "#8C2C2C")
+## Boxplot
+p_box_aud = ggplot(df_cleaned, aes(x = Audience..score.., y = Genre, fill = Genre)) +
+  geom_boxplot(alpha = 0.8) +
+  labs(x = "Audience Score") +
+  scale_fill_manual(values = my_colors) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 12),
+    axis.title.x = element_text(face = "bold", size = 14, margin = margin(r = 100, unit = 'pt')),
+    axis.text.x = element_text(face = "bold"),
+    axis.text.y = element_text(face = "bold"),
+    axis.title.y = element_blank(),
+    panel.grid.major.x = element_line(color = "grey", size = 0.1, linetype = "dashed"),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_blank(), 
+    panel.grid.minor.y = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none"
+  )
+
+
+## Bar
+p_bar_aud = ggplot(df_cleaned, aes(y = Genre, fill = Genre)) +
+  geom_bar(alpha = 0.8) +
+  labs(x = "Number of Movies") +
+  scale_fill_manual(values = my_colors) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 12),
+    axis.title.x = element_text(face = "bold", size = 14, margin = margin(r = 100, unit = 'pt')),
+    axis.text.x = element_text(face = "bold"),
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    panel.grid.major.x = element_line(color = "grey", size = 0.1, linetype = "dashed"),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_blank(), 
+    panel.grid.minor.y = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none"
+  )
+
+## Point - Scatter
+p_scatter_aud = ggplot(df_cleaned) +
+  geom_point(aes(x = Rotten.Tomatoes.. , y = Audience..score.., colour = Genre), size = 3, alpha = .8) +
+  labs(x = "Rotten Tomatoes Score", y = "Audience Score") +
+  scale_colour_manual(values = my_colors) +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_text(face = "bold", size = 12),
+    axis.title.y = element_text(face = "bold", size = 12),
+    panel.grid.major.x = element_line(color = "grey", size = 0.1, linetype = "dashed"),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_line(color = "grey", size = 0.1, linetype = "dashed"), 
+    panel.grid.minor.y = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none"
+  )
+
+
+
+## AUDIENCE SCORE | WORLWIDE GROSS
+## Point - Scatter
+p_scatter_gross = ggplot(df_cleaned) +
+  geom_point(aes(x = Worldwide.Gross , y = Audience..score.., colour = Genre), size = 3, alpha = .8) +
+  labs(x = "Worldwide Gross") +
+  scale_colour_manual(values = my_colors) +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_text(face = "bold", size = 12),
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    panel.grid.major.x = element_line(color = "grey", size = 0.1, linetype = "dashed"),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_line(color = "grey", size = 0.1, linetype = "dashed"), 
+    panel.grid.minor.y = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none"
+  )
+
+
+## Combine plots
+p_all <- (p_box_aud | p_bar_aud) / (p_scatter_aud | p_scatter_gross) 
+p_all + plot_layout(guides = 'collect') & theme(legend.position = 'none')
+
+
+```
+
+Row {data-height=400}
+-------------------------------------
+   
+### Chart 2
+
+```{r}
+## WORLDWIDE GROSS | PROFITABILITY
+## Boxplot
+p_box_gross = ggplot(df_cleaned, aes(x = Worldwide.Gross, y = Genre, fill = Genre)) +
+  geom_boxplot(alpha = 0.8) +
+  scale_fill_manual(values = my_colors) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Helvetica", size = 12),
+    axis.title.x = element_blank(),
+    axis.text.x = element_text(face = "bold"),
+    axis.title.y = element_blank(),
+    axis.text.y = element_text(face = "bold"),
+    panel.grid.major.x = element_line(color = "grey", size = 0.1, linetype = "dashed"),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_blank(), 
+    panel.grid.minor.y = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none"
+  )
+
+
+## Point - Scatter
+p_scatter_gross_prof <- ggplot(df_cleaned) +
+  geom_point(aes(x = Worldwide.Gross , y = Profitability, colour = Genre), size = 3, alpha = .8) +
+  labs(x = "Worldwide Gross", y = "Profitability") +
+  scale_colour_manual(values = my_colors) +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_text(face = "bold", size = 12),
+    axis.text.x = element_text(face = "bold"),
+    axis.title.y = element_text(face = "bold", size = 12),
+    axis.text.y = element_text(face = "bold"),
+    panel.grid.major.x = element_line(color = "grey", size = 0.1, linetype = "dashed"),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_line(color = "grey", size = 0.1, linetype = "dashed"), 
+    panel.grid.minor.y = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none"
+  )
+
+p_all_2 <- (p_box_gross) / (p_scatter_gross_prof) 
+p_all_2 + plot_layout(guides = 'collect') & theme(legend.position = 'none')
+
+
+```   
+    
+### Chart 3
+
+```{r}
+## Correlation Plot
+# Create correlation matrix
+correlation <- cor(df_numeric)
+
+my_colors <- colorRampPalette(c("#8C2C2C", "white", "#2E3F8B"))(200)
+corrplot(correlation, 
+         order = 'AOE', 
+         tl.srt =  45,
+         tl.col = "black",
+         col =viridis(200, option = "mako")
+)
+```
+
+
+
+
+
+
