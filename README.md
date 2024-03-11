@@ -1,5 +1,10 @@
 # Hollywood Movies Performance Analysis
 
+<p align="center">
+<img src="assets/gif.gif" width="70%" alt="gif">
+</p>
+
+
 The goal of this project is to analyze the performance of Hollywood movies, focusing on a dataset of films released between 2007 and 2012. I intend to explore various attributes that may influence a movie's success, such as title, genre, production studio, profitability, and ratings.
 
 ## Data Source
@@ -78,6 +83,39 @@ A brief overview of the most interesting insights obtained from the analysis, su
 - **Financial Correlation:** Profitability doesn't always align with high gross revenue, indicating that some high-earning movies are not necessarily the most profitable when considering production costs.
 
 These insights are crucial for understanding industry trends and can assist stakeholders in making informed decisions about movie production and investment strategies.
+
+## Access to Dashboards
+
+### Power BI Dashboard Usage
+
+For the most seamless experience with the Power BI dashboard, there are two recommended options:
+
+1. **Download the Power BI file:**
+   You can download the Power BI dashboard file from the repository to interact with it locally on your machine. To do this, follow these steps:
+   - Navigate to the repository.
+   - Locate the Power BI file (.pbix extension).
+   - Download the file to your computer.
+   - Open the file using Power BI Desktop (installation of Power BI Desktop is required).
+
+2. **Access through the repository:**
+   The repository contains all the necessary files for a comprehensive analysis. You can clone or download the repository to ensure you have all the scripts, datasets, and the Power BI file for local execution and further development.
+
+Please ensure you have the necessary permissions and access to view or download the files from the repository.
+
+### Fleshboard for R
+
+The interactive Fleshboard dashboard for R can be accessed online via the following link: [Fleshboard Dashboard](https://albertevieites.shinyapps.io/hollywood_movies/)
+
+#### Accessing the Dashboard
+- Click on the provided link to open the Fleshboard in your web browser.
+- No installation or local R environment is needed, as the dashboard is hosted online for ease of access.
+
+#### Interacting with the Dashboard
+- Navigate through the various tabs to explore different data visualizations.
+- Use the interactive elements such as dropdowns to filter and drill down into specific data views.
+
+Please note that the link might require internet access. 
+
 
 ## Contribution Guidelines
 To contribute, please fork the repository and submit a pull request with your suggested changes. For major changes, please open an issue first to discuss what you would like to change.
