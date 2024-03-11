@@ -28,7 +28,7 @@ The dataset includes the following fields for each movie:
 To conduct this analysis, interactive dashboards have been developed using the following tools:
 
 - **Power BI:** An interactive dashboard to visualize and explore the different aspects of movie performance.
-- **Fleshboard for R:** A complementary tool specifically designed for R users, offering detailed visualizations and specific analyses of movie performance.
+- **Flexboard for R:** A complementary tool specifically designed for R users, offering detailed visualizations and specific analyses of movie performance.
 
 ## Methodology
 
@@ -51,7 +51,7 @@ The methodology for this analysis involved both initial data exploration and cle
 
 - In Power BI, used the Power Query Editor to further clean the data by removing a row with an empty value, aligning the dataset for accurate analysis.
 
-This comprehensive approach to data preparation set the stage for insightful analysis conducted through interactive dashboards in Power BI and Fleshboard for R, enabling a deep dive into the performance metrics of Hollywood movies.
+This comprehensive approach to data preparation set the stage for insightful analysis conducted through interactive dashboards in Power BI and Flexboard for R, enabling a deep dive into the performance metrics of Hollywood movies.
 
 ## Key Findings
 
@@ -102,12 +102,12 @@ For the most seamless experience with the Power BI dashboard, there are two reco
 
 Please ensure you have the necessary permissions and access to view or download the files from the repository.
 
-### Fleshboard for R
+### Flexboard for R
 
-The interactive Fleshboard dashboard for R can be accessed online via the following link: [Fleshboard Dashboard](https://albertevieites.shinyapps.io/hollywood_movies/)
+The interactive Flexboard dashboard for R can be accessed online via the following link: [Flexboard Dashboard](https://albertevieites.shinyapps.io/hollywood_movies/)
 
 #### Accessing the Dashboard
-- Click on the provided link to open the Fleshboard in your web browser.
+- Click on the provided link to open the Flexboard in your web browser.
 - No installation or local R environment is needed, as the dashboard is hosted online for ease of access.
 
 #### Interacting with the Dashboard
