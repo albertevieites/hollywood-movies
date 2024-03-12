@@ -5,7 +5,7 @@ account: albertevieites
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 11456705
-bundleId: 8360706
+bundleId: 8362287
 url: https://albertevieites.shinyapps.io/hollywood_movies/
 version: 1
 asMultiple: FALSE

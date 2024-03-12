@@ -1,7 +1,7 @@
 # Hollywood Movies Performance Analysis
 
 <p align="center">
-<img src="assets/gif.gif" width="70%" alt="gif">
+<img src="assets/scatter.gif" width="70%" alt="gif">
 </p>
 
 
@@ -73,12 +73,12 @@ A brief overview of the most interesting insights obtained from the analysis, su
 ### R Dashboards
 
 #### Industry Trends
-![Industry Trends](assets/R-trends.png)
+![Industry Trends](assets/R_trends.png)
 - **Movies by Genre:** The distribution of movies across genres over the years shows a consistent production of drama and comedy films.
 - **Movies by Studio:** Data reveals that certain studios, such as Warner Bros. and Sony, are more prolific in certain years.
 
 #### Data Relationships
-![Data Relationships](assets/R-relation.png)
+![Data Relationships](assets/R_relationships.png)
 - **Correlation among Scores:** There is a variable relationship between audience scores and Rotten Tomatoes scores, suggesting different factors influence critics and audiences.
 - **Financial Correlation:** Profitability doesn't always align with high gross revenue, indicating that some high-earning movies are not necessarily the most profitable when considering production costs.
 
