@@ -77,8 +77,28 @@ A brief overview of the most interesting insights obtained from the analysis, su
 - **Movies by Genre:** The distribution of movies across genres over the years shows a consistent production of drama and comedy films.
 - **Movies by Studio:** Data reveals that certain studios, such as Warner Bros. and Sony, are more prolific in certain years.
 
+#### Distribution Insights
+
+![Data Relationships](assets/R_distribution.png) 
+
+Numeric Variables:
+- **Audience Score:** This histogram displays the distribution of audience scores, offering insight into viewer preferences and satisfaction.
+- **Profitability:** The profitability distribution indicates how often movies achieve different levels of financial success relative to their cost.
+- **Rotten Tomatoes:** By showcasing the spread of critic scores, we gain an understanding of critical reception across the dataset.
+- **Worldwide Gross:** This graph explores the range of worldwide revenues, highlighting the economic impact of the films featured.
+- **Year:** The number of movies released per year is displayed, illustrating changes in production volume over time.
+
+Categorical Variables:
+- **Genre:** A bar chart breaks down movie counts by genre, providing a visual summary of genre popularity and market saturation.
+- **Lead Studio:** This visualization compares the number of movies produced by each studio, reflecting industry competition and studio prominence.
+
+These visual distributions are crucial for stakeholders looking to understand market tendencies, audience and critic perceptions, and the financial landscape of the film industry. 
+
+
 #### Data Relationships
+
 ![Data Relationships](assets/R_relationships.png)
+
 - **Correlation among Scores:** There is a variable relationship between audience scores and Rotten Tomatoes scores, suggesting different factors influence critics and audiences.
 - **Financial Correlation:** Profitability doesn't always align with high gross revenue, indicating that some high-earning movies are not necessarily the most profitable when considering production costs.
 
