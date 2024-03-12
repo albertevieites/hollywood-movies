@@ -7,6 +7,31 @@ output:
 runtime: shiny
 ---
 
+```{css, echo=FALSE}
+.navbar {
+  background-color: #32180C !important;
+  padding: 2rem 0;
+}
+
+.nav > li > a:hover,
+.nav > li > a:focus {
+  background-color: #673218 !important;
+}
+
+.nav-item.active > .nav-link {
+  background-color: #673218 !important;
+}
+
+.navbar-inverse,
+.navbar-collapse {
+  border-color: transparent;
+}
+
+.navbar-brand {
+  font-size: 3.7rem;
+}
+```
+
 ```{r setup, include=FALSE}
 # Importing Libraries
 library(ggplot2)
@@ -74,11 +99,9 @@ wes_palette <- wes_palette("Zissou1", n = 4, type = "continuous")
 
 ```
 
-Industry Trends {data-orientation=columns}
-=====================================  
+# Industry Trends {data-orientation="columns"}
 
-Column {data-width=600}
------------------------------------------------------------------------
+## Column {data-width="600"}
 
 ### Movies by Studio
 
@@ -92,8 +115,7 @@ renderPlot({
     filter(Year == input$selectedYear)
   
   ggplot(filtered_data, aes(x = reorder(Lead.Studio, -Count), y = Count, fill = Lead.Studio)) +
-    geom_col(show.legend = FALSE) +
-    scale_fill_brewer(palette = "Blues") +
+    geom_col(fill = "#084038",  show.legend = FALSE) +
     theme_minimal() +
     theme(
       plot.margin = margin(b = 100),
@@ -114,8 +136,7 @@ renderPlot({
 
 ```
 
-Column {data-width=350}
------------------------------------------------------------------------
+## Column {data-width="350"}
 
 ### Movies by Genre
 
@@ -129,8 +150,7 @@ renderPlot({
     filter(Year == input$selectedGenreYear)
   
   ggplot(filtered_data, aes(x = reorder(Genre, -Count), y = Count, fill = Genre)) +
-    geom_col(show.legend = FALSE) +
-    scale_fill_brewer(palette = "Blues") +
+    geom_col(fill = "#084038", show.legend = FALSE) +
     theme_minimal() +
     theme(
       plot.margin = margin(b = 100),
@@ -166,7 +186,7 @@ names(df_numeric) <- sapply(names(df_numeric), change_names)
 # Create correlation matrix
 correlation <- cor(df_numeric)
 
-my_colors <- brewer.pal(8, "Blues")
+my_colors <- brewer.pal(8, "Greens")
 
 corrplot(correlation, 
          order = 'AOE', 
@@ -177,11 +197,9 @@ corrplot(correlation,
 )
 ```
 
-Distribution Insights {data-orientation=columns}
-=====================================     
+# Distribution Insights {data-orientation="columns"}
 
-Column {data-width=700}
--------------------------------------
+## Column {data-width="700"}
 
 ### Numeric Variables
 
@@ -196,7 +214,7 @@ df_long$variable <- recode(df_long$variable,
                            .default = df_long$variable) 
 
 p_numerical <- ggplot(df_long, aes(x = value)) +
-  geom_histogram(bins = 12, fill = "#0A519C", color = "grey") +
+  geom_histogram(bins = 12, fill = "#084038", color = "grey") +
   facet_wrap(~ variable, scales = "free", ncol = 2, strip.position = "bottom") +
   theme_minimal() +
   labs(x = NULL, y = NULL) +
@@ -216,9 +234,8 @@ p_numerical <- ggplot(df_long, aes(x = value)) +
 p_numerical
 ```
 
-Column {data-width=500}
--------------------------------------
-   
+## Column {data-width="500"}
+
 ### Categorical Variables
 
 ```{r}
@@ -242,7 +259,7 @@ df_genre <- df_long_categorical %>%
 
 # Gráfico para Genre
 p_genre <- ggplot(df_genre, aes(x = value)) +
-  geom_bar(fill = "#0A519C", color = "grey") +
+  geom_bar(fill = "#084038", color = "grey") +
   xlab("Genre") +  
   ylab("") + 
   theme_minimal() +
@@ -266,7 +283,7 @@ df_lead_studio <- df_long_categorical %>%
 
 # Gráfico para Lead Studio
 p_lead_studio <- ggplot(df_lead_studio, aes(x = value)) +
-  geom_bar(fill = "#0A519C", color = "grey") +
+  geom_bar(fill = "#084038", color = "grey") +
   xlab("Lead Studio") +  
   ylab("") + 
   theme_minimal() +
@@ -288,25 +305,24 @@ p_lead_studio <- ggplot(df_lead_studio, aes(x = value)) +
 p_combined <- p_genre / p_lead_studio 
 p_combined
 
-```   
+```
 
+# Data Relationships {data-orientation="columns"}
 
-Data Relationships {data-orientation=columns}
-=====================================     
-
-Column {data-width=700}
--------------------------------------
+## Column {data-width="700"}
 
 ### Correlation among Scores
 
 ```{r}
 ## AUDIENCE SCORE | ROTTEN TOMATOES SCORE
 
+my_colors <- c("#403408", "#400840", "#084038", "#439589", "#BFB077", "#BF77BF")
+
 ## Boxplot
 p_box_aud = ggplot(df_cleaned, aes(x = Audience..score.., y = Genre, fill = Genre)) +
   geom_boxplot(alpha = 0.8) +
   labs(x = "Audience Score") +
-  scale_fill_brewer(palette = "Paired") +
+  scale_fill_manual(values = my_colors) +
   theme_minimal() +
   theme(
     text = element_text(size = 8),
@@ -325,7 +341,7 @@ p_box_aud = ggplot(df_cleaned, aes(x = Audience..score.., y = Genre, fill = Genr
 p_bar_aud = ggplot(df_cleaned, aes(y = Genre, fill = Genre)) +
   geom_bar(alpha = 0.8) +
   labs(x = "Number of Movies") +
-  scale_fill_brewer(palette = "Paired") +
+  scale_fill_manual(values = my_colors) +
   theme_minimal() +
   theme(
     text = element_text(size = 8),
@@ -344,7 +360,7 @@ p_bar_aud = ggplot(df_cleaned, aes(y = Genre, fill = Genre)) +
 p_scatter_aud = ggplot(df_cleaned) +
   geom_point(aes(x = Rotten.Tomatoes.. , y = Audience..score.., colour = Genre), size = 3, alpha = .8) +
   labs(x = "Rotten Tomatoes Score", y = "Audience Score") +
-  scale_colour_brewer(palette = "Paired") +
+  scale_colour_manual(values = my_colors) +
   theme_minimal() +
   theme(
     axis.title.x = element_text(face = "bold", size = 10),
@@ -364,7 +380,7 @@ p_scatter_aud = ggplot(df_cleaned) +
 p_scatter_gross = ggplot(df_cleaned) +
   geom_point(aes(x = Worldwide.Gross , y = Audience..score.., colour = Genre), size = 3, alpha = .8) +
   labs(x = "Worldwide Gross") +
-  scale_colour_brewer(palette = "Paired") +
+  scale_colour_manual(values = my_colors) +
   theme_minimal() +
   theme(
     axis.title.x = element_text(face = "bold", size = 10),
@@ -386,9 +402,8 @@ p_all + plot_layout(guides = 'collect') & theme(legend.position = 'none')
 
 ```
 
-Column {data-width=500}
--------------------------------------
-   
+## Column {data-width="500"}
+
 ### Financial Corretlation
 
 ```{r}
@@ -396,7 +411,7 @@ Column {data-width=500}
 ## Boxplot
 p_box_gross = ggplot(df_cleaned, aes(x = Worldwide.Gross, y = Genre, fill = Genre)) +
   geom_boxplot(alpha = 0.8) +
-  scale_fill_brewer(palette = "Paired") +
+  scale_fill_manual(values = my_colors) +
   theme_minimal() +
   theme(
     text = element_text(size = 10),
@@ -417,7 +432,7 @@ p_box_gross = ggplot(df_cleaned, aes(x = Worldwide.Gross, y = Genre, fill = Genr
 p_scatter_gross_prof <- ggplot(df_filtered) +
   geom_point(aes(x = Worldwide.Gross , y = Profitability, colour = Genre), size = 3, alpha = .8) +
   labs(x = "Worldwide Gross", y = "Profitability") +
-  scale_colour_brewer(palette = "Paired") +
+  scale_colour_manual(values = my_colors) +
   theme_minimal() +
   theme(
     axis.title.x = element_text(face = "bold", size = 12),
@@ -436,5 +451,4 @@ p_all_2 <- (p_box_gross) / (p_scatter_gross_prof)
 p_all_2 + plot_layout(guides = 'collect') & theme(legend.position = 'none')
 
 
-```   
-  
+```

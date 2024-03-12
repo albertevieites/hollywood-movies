@@ -15,9 +15,14 @@ df_filtered <- df %>%
 
 df_filtered$Year <- as.numeric(as.character(df_filtered$Year))
 
+# Render Plot
+## Colour Palette
+my_colors <- c("#403408", "#400840", "#084038", "#439589", "#BFB077", "#BF77BF")
+
+## Plot
 p <- ggplot(df_filtered, aes(x = Audience..score.., y = Profitability, size = Worldwide.Gross, color = Genre)) +
   geom_point(alpha = 0.7) +
-  scale_colour_brewer(palette = "Paired") +
+  scale_colour_manual(values = my_colors) +
   scale_size(range = c(1, 10), name = "Worldwide Gross\n(millions)") +
   labs(title = 'Year: {as.integer(frame_time)}', x = 'Audience Score', y = 'Profitability') +
   transition_time(Year) +
