@@ -78,7 +78,7 @@ A brief overview of the most interesting insights obtained from the analysis, su
 - **Movies by Studio:** Data reveals that certain studios, such as Warner Bros. and Sony, are more prolific in certain years.
 
 #### Data Relationships
-![Data Relationships](assets/R-relationships.png)
+![Data Relationships](assets/R-relation.png)
 - **Correlation among Scores:** There is a variable relationship between audience scores and Rotten Tomatoes scores, suggesting different factors influence critics and audiences.
 - **Financial Correlation:** Profitability doesn't always align with high gross revenue, indicating that some high-earning movies are not necessarily the most profitable when considering production costs.
 

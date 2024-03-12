@@ -35,8 +35,13 @@ library(pandoc)
 
 # Load data
 df <- read.csv("./data/clean_df.csv")
+
 # Cleaned data
 df_cleaned <- subset(df, select = -1)
+
+# Filtered data
+df_filtered <- df %>%
+  filter(Profitability <= 60)
 
 # Summary data by year
 df_studio_year_summary <- df_cleaned %>%
@@ -409,7 +414,7 @@ p_box_gross = ggplot(df_cleaned, aes(x = Worldwide.Gross, y = Genre, fill = Genr
 
 
 ## Point - Scatter
-p_scatter_gross_prof <- ggplot(df_cleaned) +
+p_scatter_gross_prof <- ggplot(df_filtered) +
   geom_point(aes(x = Worldwide.Gross , y = Profitability, colour = Genre), size = 3, alpha = .8) +
   labs(x = "Worldwide Gross", y = "Profitability") +
   scale_colour_brewer(palette = "Paired") +
